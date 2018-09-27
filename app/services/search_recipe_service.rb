@@ -12,7 +12,12 @@ class SearchRecipeService
     
     def call        
       response = request
-      recipes = JSON.parse(response.body).fetch('results', []).map { |recipe| Recipe.new(recipe) }
+      if (response.status == 200)
+        recipes = JSON.parse(response.body).fetch('results', []).map { |recipe| Recipe.new(recipe) }
+      else
+        errors(response)
+      end         
+      [ recipes, response[:errors] ]
     end
 
     private 
@@ -20,6 +25,11 @@ class SearchRecipeService
       def request        
         url = generate_url
         Faraday.get(url)
+      end
+
+      def errors(response)        
+        error = { errors: { status: response[:status], message: response[:message] } }
+        response.merge(error)
       end
       
       def generate_url        

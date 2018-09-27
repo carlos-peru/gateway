@@ -14,7 +14,7 @@ describe RecipesController do
       
       before do
         allow(SearchRecipeService).to receive(:new) {
-          -> { recipes }
+          -> { [recipes, nil] }
         }
       end
 
@@ -26,6 +26,23 @@ describe RecipesController do
       it "returns the recipes in json" do
         get :search, params: params
         expect(JSON.parse(response.body)).to eq recipes.as_json
+      end
+    end
+
+    context "search failed" do
+      let(:params) do
+        {"query"=>"omelet", "page"=>"1"}
+      end
+      
+      before do
+        allow(SearchRecipeService).to receive(:new) {
+          -> { [nil, { status: 500} ] }
+        }
+      end
+
+      it "returns a correct status code" do
+        get :search, params: params
+        expect(response.status).to eq 500
       end
     end
 

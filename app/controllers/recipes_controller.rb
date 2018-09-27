@@ -2,8 +2,12 @@ class RecipesController < ApplicationController
   before_action :validate_params
 
   def search
-    recipes = SearchRecipeService.call(@recipeSearch)
-    render json: recipes
+    recipes, errors = SearchRecipeService.call(@recipeSearch)
+    if errors.nil?
+      render json: recipes
+    else
+      render json: errors[:message], status: errors[:status]
+    end
   end
 
   private
