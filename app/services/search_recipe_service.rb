@@ -1,5 +1,7 @@
 class SearchRecipeService
     attr_reader :query, :page
+    # Arbitraty timeframe (1 day) that needs production data to adjust.
+    CACHE_DEFAULTS = { expires_in: 1.days, force: false }
 
     def initialize(recipe_search)
       @query = recipe_search.query
@@ -24,7 +26,9 @@ class SearchRecipeService
 
       def request        
         url = generate_url
-        Faraday.get(url)
+        response =  Rails.cache.fetch(url, CACHE_DEFAULTS) do
+          Faraday.get(url)
+        end
       end
 
       def errors(response)        
