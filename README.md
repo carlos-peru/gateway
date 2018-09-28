@@ -1,14 +1,13 @@
 # Installation
 
 ```
-cd backend
 bundle install
 rails server
 ```
 
 The app will run in [http://localhost:3000](http://localhost:3000)
 
-See a sample: [http://localhost:3000/reipes/search?query=omelet&page1](http://localhost:3000/reipes/search?query=omelet&page1)
+See a sample: [http://localhost:3000/recipes/search?query=omelet&page1](http://localhost:3000/recipes/search?query=omelet&page1)
 
 # Software Design
 
